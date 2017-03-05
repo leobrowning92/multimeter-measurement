@@ -18,7 +18,8 @@ multimeter = telnetlib.Telnet()
 multimeter.open(multimeter_address,port=3490,timeout=3)
 #set the multimeter into remote mode
 multimeter.write(("SYST:REM\n").encode('ascii'))
-time.sleep(1)
+multimeter.write(("CONF:SCAL:RES\n").encode("ascii"))
+
 
 
 
@@ -32,7 +33,9 @@ print('start :  {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 # print(start)
 
 def update(x):
-    multimeter.write(("MEAS:VOLT:DC?\n").encode("ascii"))
+    multimeter.write(("READ?\n").encode("ascii"))
+    time.sleep(0.001)
+    # multimeter.write("*TRIG\n")
     value= multimeter.read_eager()
     value = value.decode("ascii")
     # print(value)
@@ -55,6 +58,7 @@ def update(x):
 
 
 try:
+
     line_ani = animation.FuncAnimation(fig1, update, interval=1000)
     plt.show()
 except KeyboardInterrupt:
